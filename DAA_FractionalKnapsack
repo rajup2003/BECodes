@@ -95,3 +95,6 @@ print(f"Total value in the knapsack: {total_value}")
 #linear time, O(n), because it processes each item exactly once.
 #Therefore, the overall time complexity of the Fractional Knapsack algorithm with a greedy approach is O(n log n) due to 
 #the sorting step, where n is the number of items.
+#Time Complexity: O(2N)
+#Auxiliary Space: O(N)
+
