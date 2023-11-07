@@ -1,0 +1,50 @@
+import time
+start_time = time.time()
+class Item:
+  def __init__(self, weight, value):
+      self.weight = weight
+      self.value = value
+      self.valuePerUnitWeight = value / weight
+
+def get_max_value(items, capacity):
+  items.sort(key=lambda x: x.valuePerUnitWeight, reverse=True)
+  total_value = 0
+
+  for item in items:
+      if capacity >= item.weight:
+          total_value += item.value
+          capacity -= item.weight
+      else:
+          total_value += item.valuePerUnitWeight * capacity
+          break
+
+  return total_value
+
+# Input: number of items
+n = int(input("Enter the number of items: "))
+items = []
+
+# Input: weights and values of items
+for _ in range(n):
+  weight = int(input("Enter weight of item: "))
+  value = int(input("Enter value of item: "))
+  items.append(Item(weight, value))
+
+# Input: knapsack capacity
+capacity = int(input("Enter the knapsack capacity: "))
+
+max_value = get_max_value(items, capacity)
+print(f"Maximum value that can be obtained is {max_value}")
+end_time = time.time()
+print("Elapsed time is", format(end_time - start_time))
+
+#Time Complexity 
+# Creating a list of items with their corresponding weights, values, and value per unit weight takes O(n) time, where n is the number of items.
+# Sorting the list based on the value per unit weight takes O(n log n) time. Here, the sort operation dominates the time complexity.
+# Iterating over the sorted list and adding items to the knapsack takes O(n) time since it goes through the list once.
+# Overall, the time complexity of the code is O(n log n)
+
+#Space Complexity 
+#The space complexity for storing the list of items is O(n), where n is the number of items. Each item object in the list occupies constant space.
+#The space complexity for additional variables like total_value, item, and loop variables is O(1) since they occupy constant space regardless of the input size.
+#Therefore, the space complexity of the code is O(n), where n is the number of items. 
