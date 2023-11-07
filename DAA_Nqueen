@@ -1,0 +1,139 @@
+def is_safe(board, row, col, n):
+  # Check if no other Queen in the same column
+  for i in range(row):
+      if board[i][col] == 1:
+          return False
+
+  # Check upper left diagonal
+  for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
+      if board[i][j] == 1:
+          return False
+
+  # Check upper right diagonal
+  for i, j in zip(range(row, -1, -1), range(col, n)):
+      if board[i][j] == 1:
+          return False
+
+  return True
+
+def solve_n_queens(board, row, n):
+  if row == n:
+      return True
+
+  for col in range(n):
+      if is_safe(board, row, col, n):
+          board[row][col] = 1
+
+          if solve_n_queens(board, row + 1, n):
+              return True
+
+          board[row][col] = 0
+
+  return False
+
+def print_board(board):
+  for row in board:
+      print(' '.join('Q' if x == 1 else '.' for x in row))
+
+def main():
+  n = int(input("Enter the size of the chessboard (n): "))
+  row = int(input("Enter the row where the first Queen is placed (0-based index): "))
+  col = int(input("Enter the column where the first Queen is placed (0-based index): "))
+
+  if n < 4:
+      print("No solution exists for n < 4.")
+      return
+
+  if row >= n or col >= n:
+      print("Invalid initial Queen position.")
+      return
+
+  board = [[0] * n for _ in range(n)]
+  board[row][col] = 1
+
+  if solve_n_queens(board, row + 1, n):
+      print("Solution for", n, "-Queens problem:")
+      print_board(board)
+  else:
+      print("No solution exists.")
+
+if __name__ == "__main__":
+  main()
+#The time complexity of the given N-Queens problem-solving algorithm using backtracking is exponential, specifically O(N!). Here's why:
+#Choices in Each Row: For each row, the algorithm has N choices (columns) to place the Queen initially. For the next row, it has (N-1) choices, and so on, until there is only one choice in the last row. This results in N * (N-1) * (N-2) * ... * 1 = N! choices in total.
+#Recursive Calls: In the worst-case scenario, the algorithm explores all possible combinations, resulting in N! recursive calls.
+#Because the number of recursive calls is proportional to N!, the time complexity is O(N!). This means the time taken by the algorithm grows factorially with the size of the chessboard, making it impractical for large values of N.
+
+#The space complexity of the given N-Queens problem-solving algorithm is O(N^2). Here's the breakdown of space usage:
+#Chessboard Representation: The primary data structure is a 2D array (board) representing the chessboard. The size of this array is N x N, where N is the size of the chessboard. Therefore, the space required for the chessboard is O(N^2) because it has N rows and N columns.
+#Function Call Stack: The recursive function solve_n_queens is called recursively for each row. In the worst case, this function is called N times (once for each row). The space used by the function call stack is proportional to the maximum depth of recursion, which is N in this case. Therefore, the space used by the function call stack is O(N).
+#Combining both the space used by the chessboard (O(N^2)) and the space used by the function call stack (O(N)), the overall space complexity of the algorithm is O(N^2 + N), which simplifies to O(N^2).
+
+
+
+def is_safe(board, row, col, n):
+  # Check if no other Queen in the same column
+  for i in range(row):
+      if board[i][col] == 1:
+          return False
+
+  # Check upper left diagonal
+  for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
+      if board[i][j] == 1:
+          return False
+
+  # Check upper right diagonal
+  for i, j in zip(range(row, -1, -1), range(col, n)):
+      if board[i][j] == 1:
+          return False
+
+  return True
+
+def solve_n_queens(board, row, n, solutions):
+  if row == n:
+      solutions.append([row[:] for row in board])
+      return
+
+  for col in range(n):
+      if is_safe(board, row, col, n):
+          board[row][col] = 1
+          solve_n_queens(board, row + 1, n, solutions)
+          board[row][col] = 0
+
+def print_solutions(solutions):
+  for idx, solution in enumerate(solutions):
+      print(f"Solution {idx + 1}:")
+      print_board(solution)
+
+def print_board(board):
+  for row in board:
+      print(' '.join('Q' if x == 1 else '.' for x in row))
+  print()
+
+def main():
+  n = int(input("Enter the size of the chessboard (n): "))
+  row = int(input("Enter the row where the first Queen is placed (0-based index): "))
+  col = int(input("Enter the column where the first Queen is placed (0-based index): "))
+
+  if n < 4:
+      print("No solution exists for n < 4.")
+      return
+
+  if row >= n or col >= n:
+      print("Invalid initial Queen position.")
+      return
+
+  board = [[0] * n for _ in range(n)]
+  board[row][col] = 1
+  solutions = []
+
+  solve_n_queens(board, row + 1, n, solutions)
+
+  if solutions:
+      print("All possible solutions for", n, "-Queens problem:")
+      print_solutions(solutions)
+  else:
+      print("No solution exists.")
+
+if __name__ == "__main__":
+  main()
