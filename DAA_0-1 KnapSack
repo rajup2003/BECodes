@@ -55,5 +55,54 @@ knapsack01(values, weights, capacity)
 # of elements and capacity is the capacity of the knapsack.
 #Therefore, the overall space complexity of the code is O(n * capacity).
 # This space is required to store the DP table, which is used to calculate and store the optimal values for subproblems. 
+////////////////////////////////////////////////////////////////////////
+#Greedy Method
+def knapSack():
+    K = [[0 for x in range(W + 1)] for x in range(n + 1)]
+    selected_items = [[False for x in range(W + 1)] for x in range(n + 1)]
 
+    # Build table K[][] in bottom up manner
+    for i in range(n + 1):
+        for w in range(W + 1):
+            if i == 0 or w == 0:
+                K[i][w] = 0
+            elif weight[i - 1] <= w:
+                K[i][w] = max(profit[i - 1] + K[i - 1][w - weight[i - 1]], K[i - 1][w])
+                # Mark the item as selected if it contributes to the current solution
+                if profit[i - 1] + K[i - 1][w - weight[i - 1]] > K[i - 1][w]:
+                    selected_items[i][w] = True
+            else:
+                K[i][w] = K[i - 1][w]
+
+    # Reconstruct the solution and find the selected items
+    items_selected = []
+    i, w = n, W
+    while i > 0 and w > 0:
+        if selected_items[i][w]:
+            items_selected.append(i - 1)  # Adjusting index to 0-based
+            w -= weight[i - 1]
+        i -= 1
+
+    # Return the maximum profit and the indices of selected items
+    return K[n][W], items_selected[::-1]  # Reversed the list to maintain the original order
+
+if __name__ == '__main__':
+    W = int(input("Enter the maximum weight of the knapsack: "))
+    n = int(input("Enter number of elements: "))
+
+    profit = []
+    weight = []
+
+    # iterating till the range
+    for i in range(0, n):
+        prof = int(input("Enter profit for element {}: ".format(i + 1)))
+        weigh = int(input("Enter weight for element {}: ".format(i + 1)))
+        profit.append(prof)
+        weight.append(weigh)
+
+    max_profit, selected_items = knapSack()
+    print("Maximum profit:", max_profit)
+    print("Selected items:", selected_items)
+#Time Complexity: O(N * W). where ‘N’ is the number of elements and ‘W’ is capacity. 
+#Auxiliary Space: O(N * W). The use of a 2-D array of size ‘N*W’.
 
