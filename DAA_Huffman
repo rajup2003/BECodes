@@ -81,4 +81,57 @@ if __name__ == "__main__":
 #Printing the Huffman codes involves traversing the Huffman tree, which takes O(n) time. 
 # This is because every character in the input is represented by a leaf node in the Huffman tree.
 #Considering these factors, the overall time complexity of the given Huffman coding implementation is O(n * log(n)).
+////////////////////////////////////////////////////////////////////////
+import heapq
+
+class Node:
+    def __init__(self, freq, symbol, left=None, right=None):
+        self.freq = freq
+        self.symbol = symbol
+        self.left = left
+        self.right = right
+        self.huff = ''
+
+    def __lt__(self, nxt):
+        return self.freq < nxt.freq
+
+def printNodes(node, val=''):
+    newVal = val + str(node.huff)
+    if node.left:
+        printNodes(node.left, newVal)
+    if node.right:
+        printNodes(node.right, newVal)
+    if not node.left and not node.right:
+        print(f"{node.symbol} -> {newVal}")
+
+if __name__ == "__main__":
+    num_chars = int(input("Enter the number of characters: "))
+    chars = []
+    freq = []
+
+    for i in range(num_chars):
+        char = input(f"Enter character {i+1}: ")
+        frequency = int(input(f"Enter frequency for character {char}: "))
+        chars.append(char)
+        freq.append(frequency)
+
+    nodes = [Node(freq[i], chars[i]) for i in range(num_chars)]
+
+    heapq.heapify(nodes)
+
+    while len(nodes) > 1:
+        left = heapq.heappop(nodes)
+        right = heapq.heappop(nodes)
+        left.huff = 0
+        right.huff = 1
+        new_node = Node(left.freq + right.freq, left.symbol + right.symbol, left, right)
+        heapq.heappush(nodes, new_node)
+
+    print("Huffman Codes:")
+    printNodes(nodes[0])
+#Time complexity: O(nlogn) where n is the number of unique characters. 
+#If there are n nodes, extractMin() is called 2*(n – 1) times. extractMin() takes O(logn) time as it calls minHeapify().
+#So, the overall complexity is O(nlogn).
+#If the input array is sorted, there exists a linear time algorithm. We will soon be discussing this in our next post.
+#Space complexity :- O(N)
 
