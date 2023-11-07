@@ -1,0 +1,84 @@
+import heapq
+
+class HuffmanNode:
+  def __init__(self, item, char):
+      self.item = item
+      self.char = char
+      self.left = None
+      self.right = None
+  def __lt__(self, other):
+      return self.item < other.item
+
+def huffman_encoding(charArray, charfreq):
+    pq = [(freq, HuffmanNode(freq, char)) for char, freq in zip(charArray, charfreq)]
+    heapq.heapify(pq)
+
+    while len(pq) > 1:
+        freq1, left = heapq.heappop(pq)
+        freq2, right = heapq.heappop(pq)
+        merged_node = HuffmanNode(freq1 + freq2, '-')
+        merged_node.left = left
+        merged_node.right = right
+        heapq.heappush(pq, (freq1 + freq2, merged_node))
+
+    root = pq[0][1]
+    return root
+
+def print_codes(root, s):
+    if root.char.isalpha():
+        print(root.char, "|", s)
+        return
+    print_codes(root.left, s + "0")
+    print_codes(root.right, s + "1")
+
+def main():
+    n = int(input("Enter the number of elements: "))
+    charArray = []
+    charfreq = []
+
+    for i in range(n):
+        char = input("Enter Character: ")[0]
+        freq = int(input("Enter the character frequency: "))
+        charArray.append(char)
+        charfreq.append(freq)
+
+    root = huffman_encoding(charArray, charfreq)
+    print("Char | Huffman code ")
+    print("--------------------")
+    print_codes(root, "")
+
+if __name__ == "__main__":
+    import time
+    start_time = time.time()
+    main()
+    end_time = time.time()
+    print("Elapsed time is: {:.6f} seconds".format(end_time - start_time))
+
+
+# Space Complexity
+#Priority Queue (Heap):
+#The priority queue is used to store HuffmanNode objects based on their frequencies.
+#In the worst case, it can contain all the unique characters, so its space complexity 
+#is O(n), where n is the number of unique characters.
+#HuffmanNode Objects:
+#For each character, a HuffmanNode object is created to store its frequency and character.
+#In the worst case, there will be n unique characters, so the space complexity for these objects is O(n).
+#Additional Variables:
+#Other variables such as charArray and charfreq store the input characters and their frequencies. 
+#These arrays have space complexity of O(n) where n is the number of unique characters.
+#Considering these factors, the overall space complexity of the given Huffman coding implementation is O(n),
+
+#Time Complexity
+#Constructing the Priority Queue (Heap):
+#Creating a priority queue and inserting n elements into it takes O(n * log(n)) time, 
+#where n is the number of unique characters. Each insertion operation takes log(n) time in the worst case.
+#Building the Huffman Tree:
+#Extracting minimum elements from the priority queue and merging them to create the Huffman tree takes
+# O(n * log(n)) time. This operation is repeated (n - 1) times because a Huffman tree with n nodes has (n - 1) internal nodes.
+#Within each iteration, extracting two minimum elements and inserting one merged element back into 
+# the priority queue takes O(log(n)) time. This step is repeated (n - 1) times.
+#Printing Huffman Codes:
+#Printing the Huffman codes involves traversing the Huffman tree, which takes O(n) time. 
+# This is because every character in the input is represented by a leaf node in the Huffman tree.
+#Considering these factors, the overall time complexity of the given Huffman coding implementation is O(n * log(n)).
+
