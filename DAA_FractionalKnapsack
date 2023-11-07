@@ -48,3 +48,50 @@ print("Elapsed time is", format(end_time - start_time))
 #The space complexity for storing the list of items is O(n), where n is the number of items. Each item object in the list occupies constant space.
 #The space complexity for additional variables like total_value, item, and loop variables is O(1) since they occupy constant space regardless of the input size.
 #Therefore, the space complexity of the code is O(n), where n is the number of items. 
+//////////////////////////////////////////////
+# Function to perform Fractional Knapsack using a greedy algorithm
+def fractional_knapsack(items, capacity):
+    # Calculate the value-to-weight ratio for each item
+    value_per_weight = [(item[1] / item[0], item[0], item[1]) for item in items]
+    # Sort the items by value-to-weight ratio in descending order
+    value_per_weight.sort(reverse=True)
+    
+    total_value = 0
+    knapsack = []
+    
+    for _, weight, value in value_per_weight:
+        # If the item can be fully included in the knapsack
+        if capacity >= weight:
+            knapsack.append((weight, value))
+            total_value += value
+            capacity -= weight
+        else:
+            # If the item cannot be fully included, include a fraction of it
+            fraction = capacity / weight
+            knapsack.append((capacity, fraction * value))
+            total_value += fraction * value
+            break
+    
+    return knapsack, total_value
+
+# Take user input for the number of items and knapsack capacity
+num_items = int(input("Enter the number of items: "))
+items = []
+for i in range(num_items):
+    weight, value = map(int, input(f"Enter weight and value for item {i + 1} (separated by space): ").split())
+    items.append((weight, value))
+
+capacity = int(input("Enter the knapsack capacity: "))
+
+# Call the function and print the results
+knapsack, total_value = fractional_knapsack(items, capacity)
+print(f"The items in the knapsack are: {knapsack}")
+print(f"Total value in the knapsack: {total_value}")
+
+#The time complexity of the given Fractional Knapsack algorithm using a greedy approach is primarily determined by the sorting step, 
+#where the items are sorted based on their value-to-weight ratios in descending order. The sorting step has a time complexity of O(n log n),
+#where n is the number of items.
+#After sorting, the algorithm iterates through the sorted items once to select items for the knapsack. This iteration step takes 
+#linear time, O(n), because it processes each item exactly once.
+#Therefore, the overall time complexity of the Fractional Knapsack algorithm with a greedy approach is O(n log n) due to 
+#the sorting step, where n is the number of items.
