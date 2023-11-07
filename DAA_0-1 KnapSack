@@ -1,0 +1,59 @@
+import time
+def knapsack01(values, weights, capacity):
+  start_time = time.time()
+  n = len(values)
+  dp = [[0 for _ in range(capacity + 1)] for _ in range(n + 1)]
+
+  for i in range(1, n + 1):
+      for w in range(1, capacity + 1):
+          if weights[i - 1] <= w:
+              dp[i][w] = max(values[i - 1] + dp[i - 1][w - weights[i - 1]], dp[i - 1][w])
+          else:
+              dp[i][w] = dp[i - 1][w]
+
+  i, j = n, capacity
+  selected_items = []
+  while i > 0 and j > 0:
+      if dp[i][j] != dp[i - 1][j]:
+          selected_items.append(i - 1)
+          j -= weights[i - 1]
+      i -= 1
+
+  print("Selected elements:")
+  for item in reversed(selected_items):
+      print(f"Item {item + 1} (Weight: {weights[item]}, Value: {values[item]})")
+  total_value = sum([values[item] for item in selected_items])
+  print("Total value of selected weights:", total_value)
+  end_time = time.time()
+  print("Elapsed time is", format(end_time - start_time))
+
+
+
+# User input for weights, values, and capacity
+n = int(input("Enter the number of elements: "))
+weights = [int(input(f"Enter weight of item {i + 1}: ")) for i in range(n)]
+values = [int(input(f"Enter value of item {i + 1}: ")) for i in range(n)]
+capacity = int(input("Enter knapsack capacity: "))
+
+# Call the knapsack function
+knapsack01(values, weights, capacity)
+
+
+#TimeComplexity 
+#Filling the DP table involves iterating through (n + 1) rows and (capacity + 1) columns, 
+# where n is the number of elements and capacity is the capacity of the knapsack.
+#For each cell in the DP table, constant time operations are performed.
+#Therefore, filling the DP table takes O(n * capacity) time.
+#Reconstructing the selected items involves iterating through the DP table, 
+# which takes O(n + capacity) time in the worst case. This is because, in the worst case,
+#  all items are selected (n iterations) and the knapsack capacity is fully utilized (capacity iterations).
+
+#SpaceComplexity
+#The space complexity of the given 0/1 Knapsack problem solution using dynamic programming 
+# is determined by the 2D array dp, which is used to store intermediate results. 
+# The size of this array is (n + 1) * (capacity + 1), where n is the number 
+# of elements and capacity is the capacity of the knapsack.
+#Therefore, the overall space complexity of the code is O(n * capacity).
+# This space is required to store the DP table, which is used to calculate and store the optimal values for subproblems. 
+
+
